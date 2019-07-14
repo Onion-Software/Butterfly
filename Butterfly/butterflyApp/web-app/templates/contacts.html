@@ -1,0 +1,452 @@
+{% extends 'index.html' %}
+
+<!---------- NAVBAR ---------->
+<!-- Navbar links -->
+{% block navbar_links %}
+    <ul class="navbar-nav">
+        <li class="nav-item active">
+            <a class="nav-link" href="{{ url_for('contacts') }}">
+                <i class="material-icons">group</i>
+                Contacts
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('projects') }}">
+                <i class="material-icons">folder</i>
+                Projects
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('subscriptions') }}">
+                <i class="material-icons">list</i>
+                Subscriptions
+            </a>
+        </li>
+    </ul>
+{% endblock navbar_links %}
+
+<!-- Search box -->
+{% block search_box %}
+    <form class="form-inline ml-auto" method="post" action="{{ url_for('find_contacts') }}">
+        <div class="form-group no-border">
+            <input class="form-control" type="text" autocomplete="off" placeholder="Search" name="keyword">
+        </div>
+        <button class="btn btn-white btn-just-icon btn-round" type="submit">
+            <i class="material-icons search-icon">search</i>
+        </button>
+    </form>
+{% endblock search_box %}
+
+<!---------- MAIN CONTENT ---------->
+{% block main_content %}
+    {% if contacts_array %}
+        <!-- Table -->
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Surname</th>
+                <th>Email</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for contact in contacts_array %}
+                <tr>
+                    <td>{{ contact.name }}</td>
+                    <td>{{ contact.surname }}</td>
+                    <td>{{ contact.email }}</td>
+                    <td class="text-right">
+                        <!-- Edit modal button -->
+                        <button class="btn btn-primary btn-fab btn-fab-mini btn-round button-icon" type="button"
+                                data-toggle="modal" data-target="#modal-edit-{{ contact.id }}">
+                            <i class="material-icons">edit</i>
+                        </button>
+                        <!-- Delete modal button -->
+                        <button class="btn btn-primary btn-fab btn-fab-mini btn-round button-icon" type="button"
+                                data-toggle="modal" data-target="#modal-delete-{{ contact.id }}">
+                            <i class="material-icons">delete</i>
+                        </button>
+                        <!-- Edit modal -->
+                        <div id="modal-edit-{{ contact.id }}" class="modal fade" tabindex="-1" role="dialog"
+                             aria-labelledby="modal-edit-label" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h6 id="modal-edit-label" class="modal-title">EDIT CONTACT</h6>
+                                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="text-left">
+                                            <p>Fields marked with an asterisk (*) are mandatory</p>
+                                        </div>
+                                        <form action="{{ url_for('update_contact') }}" method="post" autocomplete="off">
+                                            <!-- Email (before being modified) -->
+                                            <div class="form-group bmd-form-group d-none">
+                                                <input class="form-control" type="email"
+                                                       name="contact_email_old" value="{{ contact.email }}"
+                                                       readonly>
+                                            </div>
+                                            <div class="form-row">
+                                                <!-- Name -->
+                                                <div class="col form-group bmd-form-group">
+                                                    <label class="bmd-label-static" for="contact_name">Name*</label>
+                                                    <input id="contact_name" class="form-control" type="text" name="contact_name" value="{{ contact.name }}" required>
+                                                </div>
+                                                <!-- Surname -->
+                                                <div class="col form-group bmd-form-group">
+                                                    <label class="bmd-label-static"
+                                                           for="contact_surname">Surname*</label>
+                                                    <input id="contact_surname" class="form-control" type="text"
+                                                           name="contact_surname" value="{{ contact.surname }}"
+                                                           required>
+                                                </div>
+                                            </div>
+                                            <!-- Email -->
+                                            <div class="form-group bmd-form-group">
+                                                <label class="bmd-label-static" for="contact_email">Email*</label>
+                                                <input id="contact_email" class="form-control" type="email"
+                                                       name="contact_email" value="{{ contact.email }}"
+                                                       required>
+                                            </div>
+                                            <div class="form-row">
+                                                <!-- Telegram username -->
+                                                <div class="col form-group bmd-form-group">
+                                                    <label class="bmd-label-static" for="contact_telegram_username">Telegram
+                                                        username</label>
+                                                    <input id="contact_telegram_username" class="form-control" type="text"
+                                                           name="contact_telegram_username"
+                                                           {% if contact.telegram.username %}
+                                                                value="{{ contact.telegram.username }}"
+                                                           {% endif %}>
+                                                </div>
+                                                <!-- Slack email -->
+                                                <div class="col form-group bmd-form-group">
+                                                    <label class="bmd-label-static" for="contact_slack_email">Slack
+                                                        email</label>
+                                                    <input id="contact_slack_email" class="form-control" type="email"
+                                                           name="contact_slack_email"
+                                                           {% if contact.slack.email %}
+                                                                value="{{ contact.slack.email }}"
+                                                           {% endif %}>
+                                                </div>
+                                            </div>
+                                            <!-- Checkbox to show/hide additional holidays -->
+                                            <input type="checkbox" id="toggle_holidays_edit_{{ contact.id }}" class="toggle-holidays-edit d-none" checked>
+                                            <div class="form-row form-holidays">
+                                                <!-- Holidays begin 1 -->
+                                                <div class="col form-group bmd-form-group">
+                                                    <label class="bmd-label-static" for="contact_holidays_begin_1">Holidays
+                                                        begin 1</label>
+                                                    <input id="contact_holidays_begin_1" class="input-holidays" type="date"
+                                                           name="contact_holidays_begin_1"
+                                                           {% if contact.holidays.begin_1 %}
+                                                                value="{{ contact.holidays.begin_1 }}"
+                                                           {% endif %}>
+                                                </div>
+                                                <!-- Holidays end 1 -->
+                                                <div class="col form-group bmd-form-group">
+                                                    <label class="bmd-label-static" for="contact_holidays_end_1">Holidays
+                                                        end 1</label>
+                                                    <input id="contact_holidays_end_1" class="input-holidays" type="date"
+                                                           name="contact_holidays_end_1"
+                                                           {% if contact.holidays.end_1 %}
+                                                                value="{{ contact.holidays.end_1 }}"
+                                                           {% endif %}>
+                                                </div>
+                                            </div>
+                                            <div class="form-row form-holidays toggled-edit">
+                                                <!-- Holidays begin 2 -->
+                                                <div class="col form-group bmd-form-group">
+                                                    <label class="bmd-label-static" for="contact_holidays_begin_2">Holidays
+                                                        begin 2</label>
+                                                    <input id="contact_holidays_begin_2" class="input-holidays" type="date"
+                                                           name="contact_holidays_begin_2"
+                                                           {% if contact.holidays.begin_2 %}
+                                                                value="{{ contact.holidays.begin_2 }}"
+                                                           {% endif %}>
+                                                </div>
+                                                <!-- Holidays end 2 -->
+                                                <div class="col form-group bmd-form-group">
+                                                    <label class="bmd-label-static" for="contact_holidays_end_2">Holidays
+                                                        end 2</label>
+                                                    <input id="contact_holidays_end_2" class="input-holidays" type="date"
+                                                           name="contact_holidays_end_2"
+                                                           {% if contact.holidays.end_2 %}
+                                                                value="{{ contact.holidays.end_2 }}"
+                                                           {% endif %}>
+                                                </div>
+                                            </div>
+                                            <div class="form-row form-holidays toggled-edit">
+                                                <!-- Holidays begin 3 -->
+                                                <div class="col form-group bmd-form-group">
+                                                    <label class="bmd-label-static" for="contact_holidays_begin_3">Holidays
+                                                        begin 3</label>
+                                                    <input id="contact_holidays_begin_3" class="input-holidays" type="date"
+                                                           name="contact_holidays_begin_3"
+                                                           {% if contact.holidays.begin_3 %}
+                                                                value="{{ contact.holidays.begin_3 }}"
+                                                           {% endif %}>
+                                                </div>
+                                                <!-- Holidays end 3 -->
+                                                <div class="col form-group bmd-form-group">
+                                                    <label class="bmd-label-static" for="contact_holidays_end_3">Holidays
+                                                        end 3</label>
+                                                    <input id="contact_holidays_end_3" class="input-holidays" type="date"
+                                                           name="contact_holidays_end_3"
+                                                           {% if contact.holidays.end_3 %}
+                                                                value="{{ contact.holidays.end_3 }}"
+                                                           {% endif %}>
+                                                </div>
+                                            </div>
+                                            <!-- Label button to show/hide additional holidays -->
+                                            <div class="text-center">
+                                                <label for="toggle_holidays_edit_{{ contact.id }}" class="btn btn-default btn-sm">SHOW/HIDE ADDITIONAL HOLIDAYS</label>
+                                            </div>
+                                            <!-- Preference checkboxes -->
+                                            <div class="text-center" style="margin-top: 1em">
+                                                <p>Notify on</p>
+                                                <!-- Email preference -->
+                                                <div class="form-check form-check-inline">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input" type="checkbox"
+                                                               name="contact_use_email"
+                                                                {% if contact.preferences.use_email %}
+                                                               checked
+                                                                {% endif %}
+                                                        > Email
+                                                        <span class="form-check-sign">
+                                                            <span class="check"></span>
+                                                        </span>
+                                                    </label>
+                                                </div>
+                                                <!-- Telegram preference -->
+                                                <div class="form-check form-check-inline">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input" type="checkbox"
+                                                               name="contact_use_telegram"
+                                                                {% if contact.preferences.use_telegram %}
+                                                               checked
+                                                                {% endif %}
+                                                        > Telegram
+                                                        <span class="form-check-sign">
+                                                            <span class="check"></span>
+                                                        </span>
+                                                    </label>
+                                                </div>
+                                                <!-- Slack preference -->
+                                                <div class="form-check form-check-inline">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input" type="checkbox"
+                                                               name="contact_use_slack"
+                                                                {% if contact.preferences.use_slack %}
+                                                               checked
+                                                                {% endif %}> Slack
+                                                        <span class="form-check-sign">
+                                                            <span class="check"></span>
+                                                        </span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <!-- Edit modal dismiss buttons -->
+                                            <div class="text-center" style="margin-top: 2em">
+                                                <button class="btn btn-secondary" type="button" data-dismiss="modal">
+                                                    Close
+                                                </button>
+                                                <button class="btn btn-primary" type="submit">Submit</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Delete modal -->
+                        <div id="modal-delete-{{ contact.id }}" class="modal fade" tabindex="-1" role="dialog"
+                             aria-labelledby="modal-delete-label" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h6 id="modal-delete-label" class="modal-title">DELETE CONTACT</h6>
+                                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body text-left">
+                                        <p>Delete the contact associated with the following email?</p>
+                                        <form id="delete-form" action="{{ url_for('delete_contact') }}" method="post">
+                                            <!-- Email -->
+                                            <div class="form-group bmd-form-group to-delete">
+                                                <input class="form-control"
+                                                       name="email_to_delete" value="{{ contact.email }}" readonly>
+                                            </div>
+                                            <!-- Delete modal dismiss buttons -->
+                                            <div class="text-center" style="margin-top: 2em">
+                                                <button class="btn btn-secondary" type="button" data-dismiss="modal">
+                                                    No
+                                                </button>
+                                                <button class="btn btn-primary" type="submit">Yes</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <h1 class="text-center">No contacts found</h1>
+    {% endif %}
+
+    <!-- Insert modal button -->
+    <div class="fixed-bottom-right">
+        <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#modal-insert"
+                onclick="document.getElementById('input-form').reset()">
+            Insert contact
+        </button>
+    </div>
+
+    <!-- Insert modal -->
+    <div id="modal-insert" class="modal fade" tabindex="-1" role="dialog"
+         aria-labelledby="modal-insert-label" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 id="modal-insert-label" class="modal-title">INSERT CONTACT</h6>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Fields marked with an asterisk (*) are mandatory</p>
+                    <form id="input-form" action="{{ url_for('insert_contact') }}" method="post" autocomplete="off">
+                        <div class="form-row">
+                            <!-- Name -->
+                            <div class="col form-group bmd-form-group">
+                                <label class="bmd-label-floating" for="contact_name">Name*</label>
+                                <input id="contact_name" class="form-control" type="text" name="contact_name"
+                                       required>
+                            </div>
+                            <!-- Surname -->
+                            <div class="col form-group bmd-form-group">
+                                <label class="bmd-label-floating" for="contact_surname">Surname*</label>
+                                <input id="contact_surname" class="form-control" type="text" name="contact_surname"
+                                       required>
+                            </div>
+                        </div>
+                        <!-- Email -->
+                        <div class="form-group bmd-form-group">
+                            <label class="bmd-label-floating" for="contact_email">Email*</label>
+                            <input id="contact_email" class="form-control" type="email" name="contact_email"
+                                   required>
+                        </div>
+                        <div class="form-row">
+                            <!-- Telegram username -->
+                            <div class="col form-group bmd-form-group">
+                                <label class="bmd-label-floating" for="contact_telegram_username">Telegram
+                                    username</label>
+                                <input id="contact_telegram_username" class="form-control" type="text" name="contact_telegram_username">
+                            </div>
+                            <!-- Slack email -->
+                            <div class="col form-group bmd-form-group">
+                                <label class="bmd-label-floating" for="contact_slack_email">Slack email</label>
+                                <input id="contact_slack_email" class="form-control" type="email"
+                                       name="contact_slack_email">
+                            </div>
+                        </div>
+                        <!-- Checkbox to show/hide additional holidays -->
+                        <input type="checkbox" id="toggle_holidays_insert" class="toggle-holidays-insert d-none" checked>
+                        <div class="form-row form-holidays">
+                            <!-- Holidays begin 1 -->
+                            <div class="col form-group bmd-form-group">
+                                <label class="bmd-label-static" for="contact_holidays_begin_1">Holidays begin 1</label>
+                                <input id="contact_holidays_begin_1" class="input-holidays" type="date"
+                                       name="contact_holidays_begin_1" value="">
+                            </div>
+                            <!-- Holidays end 1 -->
+                            <div class="col form-group bmd-form-group">
+                                <label class="bmd-label-static" for="contact_holidays_end_1">Holidays end 1</label>
+                                <input id="contact_holidays_end_1" class="input-holidays" type="date"
+                                       name="contact_holidays_end_1" value="">
+                            </div>
+                        </div>
+                        <div id="holidays_2" class="form-row form-holidays toggled-insert">
+                            <!-- Holidays begin 2 -->
+                            <div class="col form-group bmd-form-group">
+                                <label class="bmd-label-static" for="contact_holidays_begin_2">Holidays begin 2</label>
+                                <input id="contact_holidays_begin_2" class="input-holidays" type="date"
+                                       name="contact_holidays_begin_2" value="">
+                            </div>
+                            <!-- Holidays end 2 -->
+                            <div class="col form-group bmd-form-group">
+                                <label class="bmd-label-static" for="contact_holidays_end_2">Holidays end 2</label>
+                                <input id="contact_holidays_end_2" class="input-holidays" type="date"
+                                       name="contact_holidays_end_2" value="">
+                            </div>
+                        </div>
+                        <div id="holidays_3" class="form-row form-holidays toggled-insert">
+                            <!-- Holidays begin 3 -->
+                            <div class="col form-group bmd-form-group">
+                                <label class="bmd-label-static" for="contact_holidays_begin_3">Holidays begin 3</label>
+                                <input id="contact_holidays_begin_3" class="input-holidays" type="date"
+                                       name="contact_holidays_begin_3" value="">
+                            </div>
+                            <!-- Holidays end 3 -->
+                            <div class="col form-group bmd-form-group">
+                                <label class="bmd-label-static" for="contact_holidays_end_3">Holidays end 3</label>
+                                <input id="contact_holidays_end_3" class="input-holidays" type="date"
+                                       name="contact_holidays_end_3" value="">
+                            </div>
+                        </div>
+                        <!-- Label button to show/hide additional holidays -->
+                        <div class="text-center">
+                            <label for="toggle_holidays_insert" class="btn btn-default btn-sm">SHOW/HIDE ADDITIONAL HOLIDAYS</label>
+                        </div>
+                        <!-- Preference checkboxes -->
+                        <div class="text-center" style="margin-top: 1em">
+                            <p>Notify on</p>
+                            <!-- Email preference -->
+                            <div class="form-check form-check-inline">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="checkbox"
+                                           name="contact_use_email"> Email
+                                    <span class="form-check-sign">
+                                            <span class="check"></span>
+                                        </span>
+                                </label>
+                            </div>
+                            <!-- Telegram preference -->
+                            <div class="form-check form-check-inline">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="checkbox"
+                                           name="contact_use_telegram"> Telegram
+                                    <span class="form-check-sign">
+                                            <span class="check"></span>
+                                        </span>
+                                </label>
+                            </div>
+                            <!-- Slack preference -->
+                            <div class="form-check form-check-inline">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="checkbox"
+                                           name="contact_use_slack"> Slack
+                                    <span class="form-check-sign">
+                                            <span class="check"></span>
+                                        </span>
+                                </label>
+                            </div>
+                        </div>
+                        <!-- Insert modal dismiss buttons -->
+                        <div class="text-center" style="margin-top: 2em">
+                            <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
+                            <button class="btn btn-primary" type="submit">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock main_content %}

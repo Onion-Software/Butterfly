@@ -1,0 +1,30 @@
+version: '3.3'
+services:
+  gitlab:
+    image: gitlab/gitlab-ce:12.0.3-ce.0
+    container_name: gitlab
+    hostname: gitlab.server
+    restart: always
+    ports:
+      - "4080:80"
+      - "4443:443"
+      - "4022:22"
+    volumes:
+      - gitlab-config:/etc/gitlab/
+      - gitlab-data:/var/opt/gitlab/
+      - gitlab-logs:/var/log/gitlab/
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "500k"
+        max-file: "3"
+
+networks:
+  default:
+    external:
+      name: butterflyapp_butterfly-network
+
+volumes:
+  gitlab-config:
+  gitlab-data:
+  gitlab-logs:

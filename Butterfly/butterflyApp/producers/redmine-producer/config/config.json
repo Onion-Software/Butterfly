@@ -1,0 +1,16 @@
+{
+    "kafka_topics": {
+        "topic_producer_name_list": {
+            "redmine": "redmine"
+        }
+    },
+    "kafka_producer": {
+        "bootstrap_servers": "kafka:9092"
+    },
+    "redmine": {
+        "server": "localhost:8080",
+        "app_name": "Redmine",
+        "ip": "0.0.0.0",
+        "port": 5000
+    }
+}

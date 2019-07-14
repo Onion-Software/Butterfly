@@ -1,0 +1,145 @@
+/******************** GENERAL ********************/
+html {
+    min-height: 100%;
+    position: relative;
+}
+
+body {
+    margin-bottom: 3.5em;
+}
+
+
+/******************** NAVBAR ********************/
+nav.navbar {
+    border-radius: 0;
+}
+
+/* Navbar brand */
+img#butterfly-logo.img-fluid {
+    width: 70%;
+}
+
+/* Navbar links */
+.navbar .navbar-nav .nav-item.active .nav-link,
+.navbar .navbar-nav .nav-item.active .nav-link:hover,
+.navbar .navbar-nav .nav-item.active .nav-link:focus {
+    background-color: rgba(255, 255, 255, 0.25);
+}
+
+.navbar .navbar-nav .nav-item .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Search box */
+i.material-icons.search-icon {
+    color: #9c27b0;
+}
+
+
+/******************** MAIN CONTENT ********************/
+/* Main content box */
+div.main-box {
+    margin-left: 3em;
+    margin-right: 3em;
+}
+
+
+/********** INDEX **********/
+/* Index images */
+img#butterfly-image.img-fluid {
+    width: 25%;
+}
+
+img#onion-logo.img-fluid {
+    width: 25%;
+}
+
+
+/********** CONTACTS, PROJECTS, SUBSCRIPTIONS **********/
+/* Table rows */
+.table td {
+    vertical-align: middle;
+}
+
+/* Table icons */
+.btn.btn-primary.button-icon {
+    background-color: transparent;
+    color: #9c27b0;
+}
+
+.btn.btn-primary.button-icon:hover {
+    background-color: #9c27b0;
+    color: white;
+}
+
+/* Delete modal */
+div.form-group.bmd-form-group.to-delete {
+    padding-top: 0;
+}
+
+/* Insert modal button */
+div.fixed-bottom-right {
+    position: fixed;
+    bottom: 4em;
+    right: 3em;
+    z-index: 1030;
+}
+
+
+/********** CONTACTS **********/
+/* Edit modal, insert modal - holidays */
+div.form-row.form-holidays {
+    margin-top: 1em;
+}
+
+input.input-holidays {
+    border: none;
+    border-radius: 3px;
+    padding: 0 0.3em;
+    width: 100%;
+}
+
+input[type=checkbox].toggle-holidays-edit:checked ~ div.toggled-edit {
+    display: none
+}
+
+input[type=checkbox].toggle-holidays-insert:checked ~ div.toggled-insert {
+    display: none
+}
+
+/********** PROJECTS **********/
+
+
+/********** SUBSCRIPTIONS **********/
+/* Priorities color */
+span#priority-high {
+    color: red;
+}
+
+span#priority-medium {
+    color: orange;
+}
+
+span#priority-low {
+    color: green;
+}
+
+/* Edit modal, insert modal - priority select  */
+div.form-group.priority-select {
+    padding-top: 1.3em;
+}
+
+
+/******************** FOOTER ********************/
+.footer {
+    background-color: #d2d2d278;
+    position: absolute;
+    bottom: 0;
+    height: 3.5em;
+    width: 100%;
+}
+
+i.material-icons.heart-icon {
+    color: #9c27b0;
+    vertical-align: middle;
+}

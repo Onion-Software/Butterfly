@@ -1,0 +1,22 @@
+{
+    "kafka_topics": {
+        "topic_consumer_name_list": {
+            "slack": "slack"
+        }
+    },
+        "mongo": {
+        "db_name": "test2-db",
+        "host": "mongodb",
+        "port": 27017
+    },
+    "kafka_consumer": {
+        "bootstrap_servers": "kafka:9092",
+        "enable_auto_commit": true,
+        "auto_commit_interval_ms": 300,
+        "auto_offset_reset": "earliest",
+        "group_id": "my-group"
+    },
+    "slack": {
+        "bot_token": "YOUR TOKEN"
+    }
+}

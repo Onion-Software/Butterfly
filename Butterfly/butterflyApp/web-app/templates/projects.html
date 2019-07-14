@@ -1,0 +1,197 @@
+{% extends 'index.html' %}
+
+<!---------- NAVBAR ---------->
+<!-- Navbar links -->
+{% block navbar_links %}
+    <ul class="navbar-nav">
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('contacts') }}">
+                <i class="material-icons">group</i>
+                Contacts
+            </a>
+        </li>
+        <li class="nav-item active">
+            <a class="nav-link" href="{{ url_for('projects') }}">
+                <i class="material-icons">folder</i>
+                Projects
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('subscriptions') }}">
+                <i class="material-icons">list</i>
+                Subscriptions
+            </a>
+        </li>
+    </ul>
+{% endblock navbar_links %}
+
+<!-- Search box -->
+{% block search_box %}
+    <form class="form-inline ml-auto" method="post" action="{{ url_for('find_projects') }}">
+        <div class="form-group no-border">
+            <input class="form-control" type="text" autocomplete="off" placeholder="Search" name="keyword">
+        </div>
+        <button class="btn btn-white btn-just-icon btn-round" type="submit">
+            <i class="material-icons search-icon">search</i>
+        </button>
+    </form>
+{% endblock search_box %}
+
+<!---------- MAIN CONTENT ---------->
+{% block main_content %}
+    {% if projects_array %}
+        <!-- Table -->
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>URL</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for project in projects_array %}
+                <tr>
+                    <td>{{ project.name }}</td>
+                    <td>{{ project.url }}</td>
+                    <td class="text-right">
+                        <!-- Edit modal button -->
+                        <button class="btn btn-primary btn-fab btn-fab-mini btn-round button-icon" type="button"
+                                data-toggle="modal" data-target="#modal-edit-{{ project.id }}">
+                            <i class="material-icons">edit</i>
+                        </button>
+                        <!-- Delete modal button -->
+                        <button class="btn btn-primary btn-fab btn-fab-mini btn-round button-icon" type="button"
+                                data-toggle="modal" data-target="#modal-delete-{{ project.id }}">
+                            <i class="material-icons">delete</i>
+                        </button>
+                        <!-- Edit modal -->
+                        <div id="modal-edit-{{ project.id }}" class="modal fade" tabindex="-1" role="dialog"
+                             aria-labelledby="modal-edit-label" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h6 id="modal-edit-label" class="modal-title">EDIT PROJECT</h6>
+                                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="text-left">
+                                            <p>Fields marked with an asterisk (*) are mandatory</p>
+                                        </div>
+                                        <form action="{{ url_for('update_project') }}" method="post" autocomplete="off">
+                                            <!-- URL (before being modified) -->
+                                            <div class="form-group bmd-form-group d-none">
+                                                <input type="url" class="form-control"
+                                                       name="project_url_old" value="{{ project.url }}"
+                                                       readonly>
+                                            </div>
+                                            <!-- Name -->
+                                            <div class="form-group bmd-form-group">
+                                                <label class="bmd-label-static" for="project_name">Name*</label>
+                                                <input id="project_name" class="form-control" type="text"
+                                                       name="project_name" value="{{ project.name }}" required>
+                                            </div>
+                                            <!-- URL -->
+                                            <div class="form-group bmd-form-group">
+                                                <label class="bmd-label-static" for="project_url">URL*</label>
+                                                <input id="project_url" class="form-control" type="url"
+                                                       name="project_url" value="{{ project.url }}" required>
+                                            </div>
+                                            <!-- Edit modal dismiss buttons -->
+                                            <div class="text-center" style="margin-top: 2em">
+                                                <button class="btn btn-secondary" type="button" data-dismiss="modal">
+                                                    Close
+                                                </button>
+                                                <button class="btn btn-primary" type="submit">Submit</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Delete modal -->
+                        <div id="modal-delete-{{ project.id }}" class="modal fade" tabindex="-1" role="dialog"
+                             aria-labelledby="modal-delete-label" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h6 id="modal-delete-label" class="modal-title">DELETE PROJECT</h6>
+                                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body text-left">
+                                        <p>Delete the project associated with the following URL?</p>
+                                        <form id="delete-form" action="{{ url_for('delete_project') }}" method="post">
+                                            <!-- URL -->
+                                            <div class="form-group bmd-form-group to-delete">
+                                                <input class="form-control"
+                                                       name="url_to_delete" value="{{ project.url }}" readonly>
+                                            </div>
+                                            <!-- Delete modal dismiss buttons -->
+                                            <div class="text-center" style="margin-top: 2em">
+                                                <button class="btn btn-secondary" type="button" data-dismiss="modal">
+                                                    No
+                                                </button>
+                                                <button class="btn btn-primary" type="submit">Yes</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <h1 class="text-center">No projects found</h1>
+    {% endif %}
+
+
+    <!-- Insert modal button -->
+    <div class="fixed-bottom-right">
+        <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#modal-insert"
+                onclick="document.getElementById('input-form').reset()">
+            Insert project
+        </button>
+    </div>
+
+    <!-- Insert modal -->
+    <div id="modal-insert" class="modal fade" tabindex="-1" role="dialog"
+         aria-labelledby="modal-insert-label" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 id="modal-insert-label" class="modal-title">INSERT PROJECT</h6>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Fields marked with an asterisk (*) are mandatory</p>
+                    <form id="input-form" action="{{ url_for('insert_project') }}" method="post" autocomplete="off">
+                        <!-- Name -->
+                        <div class="form-group bmd-form-group">
+                            <label class="bmd-label-floating" for="project_name">Name*</label>
+                            <input id="project_name" class="form-control" type="text" name="project_name" required>
+                        </div>
+                        <!-- URL -->
+                        <div class="form-group bmd-form-group">
+                            <label class="bmd-label-floating" for="project_url">URL*</label>
+                            <input id="project_url" class="form-control" type="url"
+                                   name="project_url" required>
+                        </div>
+                        <!-- Insert modal dismiss buttons -->
+                        <div class="text-center" style="margin-top: 2em">
+                            <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
+                            <button class="btn btn-primary" type="submit">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock main_content %}

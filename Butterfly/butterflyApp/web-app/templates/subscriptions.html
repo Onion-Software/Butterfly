@@ -1,0 +1,276 @@
+{% extends 'index.html' %}
+
+<!---------- NAVBAR ---------->
+<!-- Navbar links -->
+{% block navbar_links %}
+    <ul class="navbar-nav">
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('contacts') }}">
+                <i class="material-icons">group</i>
+                Contacts
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('projects') }}">
+                <i class="material-icons">folder</i>
+                Projects
+            </a>
+        </li>
+        <li class="nav-item active">
+            <a class="nav-link" href="{{ url_for('subscriptions') }}">
+                <i class="material-icons">list</i>
+                Subscriptions
+            </a>
+        </li>
+    </ul>
+{% endblock navbar_links %}
+
+<!-- Search box -->
+{% block search_box %}
+    <form class="form-inline ml-auto" method="post" action="{{ url_for('find_subscriptions') }}">
+        <div class="form-group no-border">
+            <input class="form-control" type="text" autocomplete="off" placeholder="Search" name="keyword">
+        </div>
+        <button class="btn btn-white btn-just-icon btn-round" type="submit">
+            <i class="material-icons search-icon">search</i>
+        </button>
+    </form>
+{% endblock search_box %}
+
+<!---------- MAIN CONTENT ---------->
+{% block main_content %}
+    {% if subscriptions_array %}
+        <!-- Table -->
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Surname</th>
+                <th>Project</th>
+                <th>URL</th>
+                <th>Priority</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for subscription in subscriptions_array %}
+                <tr>
+                    <td>{{ subscription.contact.name }}</td>
+                    <td>{{ subscription.contact.surname }}</td>
+                    <td>{{ subscription.project.name }}</td>
+                    <td>{{ subscription.project.url }}</td>
+                    <td>
+                        {% if subscription.priority == 3 %}
+                            <span id="priority-high">High</span>
+                        {% elif subscription.priority == 2 %}
+                            <span id="priority-medium">Medium</span>
+                        {% elif subscription.priority == 1 %}
+                            <span id="priority-low">Low</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-right">
+                        <!-- Edit modal button -->
+                        <button class="btn btn-primary btn-fab btn-fab-mini btn-round button-icon" type="button"
+                                data-toggle="modal" data-target="#modal-edit-{{ subscription.id }}">
+                            <i class="material-icons">edit</i>
+                        </button>
+                        <!-- Delete modal button -->
+                        <button  class="btn btn-primary btn-fab btn-fab-mini btn-round button-icon" type="button"
+                                data-toggle="modal" data-target="#modal-delete-{{ subscription.id }}">
+                            <i class="material-icons">delete</i>
+                        </button>
+                        <!-- Edit modal -->
+                        <div id="modal-edit-{{ subscription.id }}" class="modal fade" tabindex="-1" role="dialog"
+                             aria-labelledby="modal-edit-label" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h6 id="modal-edit-label" class="modal-title">EDIT SUBSCRIPTION</h6>
+                                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="text-left">
+                                            <p>Fields marked with an asterisk (*) are mandatory</p>
+                                        </div>
+                                        <form id="input-form" action="{{ url_for('update_subscription') }}" method="post"
+                                              autocomplete="off">
+                                            <!-- Email (before being modified) -->
+                                            <div class="form-group bmd-form-group d-none">
+                                                <input class="form-control" type="email"
+                                                       name="contact_email_old" value="{{ subscription.contact.email }}"
+                                                       readonly>
+                                            </div>
+                                            <!-- URL (before being modified) -->
+                                            <div class="form-group bmd-form-group d-none">
+                                                <input class="form-control" type="url"
+                                                       name="project_url_old" value="{{ subscription.project.url }}"
+                                                       readonly>
+                                            </div>
+                                            <!-- Email -->
+                                            <div class="form-group bmd-form-group">
+                                                <label class="bmd-label-static" for="contact_email">Contact
+                                                    email*</label>
+                                                <input id="contact_email" class="form-control" type="email"
+                                                       name="contact_email" value="{{ subscription.contact.email }}"
+                                                       required>
+                                            </div>
+                                            <!-- URL -->
+                                            <div class="form-group bmd-form-group">
+                                                <label class="bmd-label-static" for="project_url">Project URL*</label>
+                                                <input id="project_url" class="form-control" type="url"
+                                                       name="project_url" value="{{ subscription.project.url }}"
+                                                       required>
+                                            </div>
+                                            <!-- Priority -->
+                                            <div class="form-group priority-select text-left">
+                                                <label for="subscription_priority">Priority</label>
+                                                <select id="subscription_priority" class="form-control selectpicker" data-style="btn btn-link"
+                                                        name="subscription_priority">
+                                                    <option value="3"
+                                                            {% if subscription.priority == 3 %}selected{% endif %}>High
+                                                    </option>
+                                                    <option value="2"
+                                                            {% if subscription.priority == 2 %}selected{% endif %}>
+                                                        Medium
+                                                    </option>
+                                                    <option value="1"
+                                                            {% if subscription.priority == 1 %}selected{% endif %}>Low
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <!-- Keywords -->
+                                            <div class="form-group bmd-form-group text-left">
+                                                <label class="bmd-label-static" for="project_url">Keywords</label>
+                                                <input id="subscription_keywords" class="form-control" type="text"
+                                                       name="subscription_keywords"
+                                                        {% if subscription.keywords %}
+                                                       value="{{ subscription.keywords|join(", ")}}"
+                                                        {% endif %}>
+                                                <small class="form-text text-muted">To insert multiple keywords,
+                                                    separate them with a comma (,)
+                                                </small>
+                                            </div>
+                                            <!-- Edit modal dismiss buttons -->
+                                            <div class="text-center" style="margin-top: 2em">
+                                                <button class="btn btn-secondary" type="button" data-dismiss="modal">
+                                                    Close
+                                                </button>
+                                                <button class="btn btn-primary" type="submit">Submit</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Delete modal -->
+                        <div id="modal-delete-{{ subscription.id }}" class="modal fade" tabindex="-1" role="dialog"
+                             aria-labelledby="modal-delete-label" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h6 id="modal-delete-label" class="modal-title">DELETE SUBSCRIPTION</h6>
+                                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body text-left">
+                                        <p>Delete the subscription associated with the following email and URL?</p>
+                                        <form id="delete-form" action="{{ url_for('delete_subscription') }}" method="post">
+                                            <!-- Email -->
+                                            <div class="form-group bmd-form-group to-delete">
+                                                <input class="form-control"
+                                                       name="email_to_delete"
+                                                       value="{{ subscription.contact.email }}" readonly>
+                                            </div>
+                                            <!-- URL -->
+                                            <div class="form-group bmd-form-group to-delete">
+                                                <input class="form-control"
+                                                       name="url_to_delete"
+                                                       value="{{ subscription.project.url }}" readonly>
+                                            </div>
+                                            <!-- Delete modal dismiss buttons -->
+                                            <div class="text-center" style="margin-top: 2em">
+                                                <button class="btn btn-secondary" type="button" data-dismiss="modal">
+                                                    No
+                                                </button>
+                                                <button class="btn btn-primary" type="submit">Yes</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <h1 class="text-center">No subscriptions found</h1>
+    {% endif %}
+
+    <!-- Insert modal button -->
+    <div class="fixed-bottom-right">
+        <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#modal-insert"
+                onclick="document.getElementById('input-form').reset()">
+            Insert subscription
+        </button>
+    </div>
+
+    <!-- Insert modal -->
+    <div id="modal-insert" class="modal fade" tabindex="-1" role="dialog"
+         aria-labelledby="modal-insert-label" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 id="modal-insert-label" class="modal-title">INSERT SUBSCRIPTION</h6>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Fields marked with an asterisk (*) are mandatory</p>
+                    <form id="input-form" action="{{ url_for('insert_subscription') }}" method="post" autocomplete="off">
+                        <!-- Email -->
+                        <div class="form-group bmd-form-group">
+                            <label class="bmd-label-floating" for="contact_email">Contact email*</label>
+                            <input id="contact_email" class="form-control" type="email"
+                                   name="contact_email" required>
+                        </div>
+                        <!-- URL -->
+                        <div class="form-group bmd-form-group">
+                            <label class="bmd-label-floating" for="project_url">Project URL*</label>
+                            <input id="project_url" class="form-control" type="url"
+                                   name="project_url" required>
+                        </div>
+                        <!-- Priority -->
+                        <div class="form-group priority-select">
+                            <label for="subscription_priority">Priority</label>
+                            <select id="subscription_priority" class="form-control selectpicker" data-style="btn btn-link"
+                                    name="subscription_priority">
+                                <option value="3">High</option>
+                                <option value="2">Medium</option>
+                                <option value="1">Low</option>
+                            </select>
+                        </div>
+                        <!-- Keywords -->
+                        <div class="form-group bmd-form-group">
+                            <label class="bmd-label-floating" for="subscription_keywords">Keywords</label>
+                            <input id="subscription_keywords" class="form-control" type="text"
+                                   name="subscription_keywords">
+                            <small class="form-text text-muted">To insert multiple keywords, separate them with a
+                                comma (,)
+                            </small>
+                        </div>
+                        <!-- Insert modal dismiss buttons -->
+                        <div class="text-center" style="margin-top: 2em">
+                            <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
+                            <button class="btn btn-primary" type="submit">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock main_content %}

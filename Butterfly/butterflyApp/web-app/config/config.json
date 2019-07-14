@@ -1,0 +1,12 @@
+{
+    "mongo": {
+        "db_name": "test2-db",
+        "host": "mongodb",
+        "port": 27017
+    },
+    "application": {
+        "app_name": "web-app",
+        "ip": "0.0.0.0",
+        "port": 80
+    }
+}

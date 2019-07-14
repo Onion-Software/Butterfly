@@ -1,0 +1,47 @@
+version: '3.3'
+services:
+  postgres:
+    image: postgres:11-alpine
+    container_name: postgres
+    hostname: postgres
+    restart: always
+    environment:
+      - 'POSTGRES_DB=redmine'
+      - 'POSTGRES_PASSWORD=password'
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "500k"
+        max-file: "3"
+
+  redmine:
+    image: redmine:3.4.6
+    container_name: redmine
+    hostname: redmine.server
+    restart: always
+    ports:
+      - "8080:3000"
+    environment:
+      - 'REDMINE_DB_POSTGRES=postgres'
+      - 'REDMINE_DB_DATABASE=redmine'
+      - 'REDMINE_DB_PASSWORD=password'
+    volumes:
+      - redmine-data:/usr/src/redmine/files
+    depends_on:
+      - postgres
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "500k"
+        max-file: "3"
+
+networks:
+  default:
+    external:
+      name: butterflyapp_butterfly-network
+
+volumes:
+  postgres-data:
+  redmine-data:

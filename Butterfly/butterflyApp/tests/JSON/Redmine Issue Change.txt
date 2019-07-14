@@ -1,0 +1,45 @@
+{
+  "object_kind": "issue",
+  "event_type": "issue",
+  "subject": "sadafasfasdas",
+  "description": "asfafadasasdas",
+  "status_id": {
+    "id": 1,
+    "name": "New",
+    "is_closed": false,
+    "position": 1,
+    "default_done_ratio": null
+  },
+  "created_on": "2019-07-02T08:19:00.000Z",
+  "updated_on": "2019-07-02T08:21:03.032Z",
+  "user_id": 1,
+  "project": {
+    "id": 4,
+    "name": "TestProject",
+    "description": "",
+    "homepage": "",
+    "is_public": true,
+    "parent_id": null,
+    "created_on": "2019-06-09T14:46:48.000Z",
+    "updated_on": "2019-06-09T14:46:48.000Z",
+    "identifier": "testproject",
+    "status": 1,
+    "lft": 7,
+    "rgt": 8,
+    "inherit_members": false,
+    "default_version_id": null,
+    "default_assigned_to_id": null
+  },
+  "priority": {
+    "id": 3,
+    "name": "High",
+    "position": 3,
+    "is_default": false,
+    "active": true,
+    "project_id": null,
+    "parent_id": null,
+    "position_name": "high3"
+  },
+  "issuecategory": null,
+  "prioritychanged": true
+}

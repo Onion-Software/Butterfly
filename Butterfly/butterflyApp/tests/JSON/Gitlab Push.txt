@@ -1,0 +1,91 @@
+{
+  object_kind push,
+  event_name push,
+  before a8c94b87be5bbca3b60b31bdb55fca6221acff2b,
+  after 2be000002552cee73185f12c34176d239d7560b5,
+  ref refsheadsmaster,
+  checkout_sha 2be000002552cee73185f12c34176d239d7560b5,
+  message null,
+  user_id 3901401,
+  user_name superveemon,
+  user_username superveemon,
+  user_email ,
+  user_avatar httpssecure.gravatar.comavatarb72605a85af960ca19a79c03b670dd10s=80&d=identicon,
+  project_id 12083457,
+  project {
+    id 12083457,
+    name test,
+    description testing,
+    web_url httpsgitlab.comsuperveemontest,
+    avatar_url null,
+    git_ssh_url git@gitlab.comsuperveemontest.git,
+    git_http_url httpsgitlab.comsuperveemontest.git,
+    namespace superveemon,
+    visibility_level 0,
+    path_with_namespace superveemontest,
+    default_branch master,
+    ci_config_path null,
+    homepage httpsgitlab.comsuperveemontest,
+    url git@gitlab.comsuperveemontest.git,
+    ssh_url git@gitlab.comsuperveemontest.git,
+    http_url httpsgitlab.comsuperveemontest.git
+  },
+  commits [
+    {
+      id 2be000002552cee73185f12c34176d239d7560b5,
+      message Update baada,
+      timestamp 2019-05-20T082634Z,
+      url httpsgitlab.comsuperveemontestcommit2be000002552cee73185f12c34176d239d7560b5,
+      author {
+        name superveemon,
+        email superveemon@gmail.com
+      },
+      added [],
+      modified [
+        baada
+      ],
+      removed []
+    },
+    {
+      id 4b80e0945a1121946faafe5664530db10fb543d8,
+      message Badaa messon,
+      timestamp 2019-04-30T100948Z,
+      url httpsgitlab.comsuperveemontestcommit4b80e0945a1121946faafe5664530db10fb543d8,
+      author {
+        name matlotto,
+        email matlotto@t33.torre.math.unipd.it
+      },
+      added [
+        baada
+      ],
+      modified [],
+      removed []
+    },
+    {
+      id a8c94b87be5bbca3b60b31bdb55fca6221acff2b,
+      message rimosson,
+      timestamp 2019-04-30T100709Z,
+      url httpsgitlab.comsuperveemontestcommita8c94b87be5bbca3b60b31bdb55fca6221acff2b,
+      author {
+        name matlotto,
+        email matlotto@t33.torre.math.unipd.it
+      },
+      added [],
+      modified [],
+      removed [
+        test.txt
+      ]
+    }
+  ],
+  total_commits_count 3,
+  push_options {},
+  repository {
+    name test,
+    url git@gitlab.comsuperveemontest.git,
+    description testing,
+    homepage httpsgitlab.comsuperveemontest,
+    git_http_url httpsgitlab.comsuperveemontest.git,
+    git_ssh_url git@gitlab.comsuperveemontest.git,
+    visibility_level 0
+  }
+}

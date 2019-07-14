@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<custom-workflow>
+  <before-save>require 'net/http'
+require 'uri'
+require 'json'
+
+# http link goes in this line
+uri = URI.parse("http://redmine-producer:5000/webhook")
+
+header = {'Content-Type': 'application/json'}
+notif = {
+        "object_kind": "issue",
+        "event_type": "issue",
+        "subject": subject,
+        "description": description,
+        "status_id": status,
+        "created_on": created_on,
+        "updated_on":updated_on,
+        "tracker":tracker,
+        "author":author,
+        "assigned_to": assigned_to,
+        "project": project,
+        "priority": priority,
+        "issuecategory":category,
+        "prioritychanged":priority_id_changed?,
+            }
+
+http = Net::HTTP.new(uri.host, uri.port)
+request = Net::HTTP::Post.new(uri.request_uri, header)
+request.body = notif.to_json
+
+if project!=nil
+  response = http.request(request)
+end</before-save>
+  <after-save></after-save>
+  <name>Issue Webhook</name>
+  <description>Manda un POST a ogni modifica di issue.
+
+Cambiare la variabile uri con l'indirizzo da usare con connessione http</description>
+  <author></author>
+  <created-at type="dateTime">2019-05-20T08:58:08Z</created-at>
+  <observable>issue</observable>
+  <before-destroy></before-destroy>
+  <after-destroy></after-destroy>
+  <exported-at>2019-07-11T17:49:17Z</exported-at>
+  <plugin-version>0.1.5</plugin-version>
+  <ruby-version>2.3.3-p222</ruby-version>
+  <rails-version>4.2.8</rails-version>
+</custom-workflow>

@@ -1,0 +1,51 @@
+{
+  "object_kind": "issue",
+  "event_type": "issue",
+  "user": {
+    "id": 1,
+    "login": "superveemon",
+    "hashed_password": "040e50ce56bb975426a6d8d886769c2fe9f84f0c",
+    "firstname": "Matteo Lotto",
+    "lastname": "Admin",
+    "admin": true,
+    "status": 1,
+    "last_login_on": "2019-05-22T22:15:34.000Z",
+    "language": "en",
+    "auth_source_id": null,
+    "created_on": "2019-05-11T11:16:44.000Z",
+    "updated_on": "2019-05-11T11:16:44.000Z",
+    "identity_url": null,
+    "mail_notification": "all",
+    "salt": "5a29f5385c51a6b4669b7290485ae137",
+    "must_change_passwd": false,
+    "passwd_changed_on": null
+  },
+  "project": {
+    "id": 3,
+    "name": "Ale",
+    "description": "",
+    "homepage": "",
+    "is_public": true,
+    "parent_id": null,
+    "created_on": "2019-05-20T08:51:03.000Z",
+    "updated_on": "2019-05-20T08:51:03.000Z",
+    "identifier": "ale",
+    "status": 1,
+    "lft": 3,
+    "rgt": 4,
+    "inherit_members": false,
+    "default_version_id": null,
+    "default_assigned_to_id": null
+  },
+  "priority": {
+    "id": 1,
+    "name": "Low",
+    "position": 1,
+    "is_default": false,
+    "active": true,
+    "project_id": null,
+    "parent_id": null,
+    "position_name": "lowest"
+  },
+  "issuecategory": null
+}

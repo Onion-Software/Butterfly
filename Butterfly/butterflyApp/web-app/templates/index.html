@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Meta tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Page title and favicon -->
+    <title>Butterfly</title>
+    <link rel="shortcut icon" href="../static/img/icons8-butterfly-filled-50.png">
+    <!-- Material Kit fonts and icons -->
+    <link rel="stylesheet" type="text/css"
+          href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons">
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
+    <!-- Material Kit CSS -->
+    <link rel="stylesheet" type="text/css" href="../static/assets/css/material-kit.css?v=2.0.5">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" type="text/css" href="../static/css/main.css">
+</head>
+
+<body class="d-flex flex-column">
+<!---------- NAVBAR ---------->
+<nav class="navbar sticky-top navbar-expand-lg bg-primary">
+    <div class="container">
+        <div class="navbar-translate">
+            <!-- Navbar brand -->
+            <a class="navbar-brand" href="/">
+                <div class="text-center">
+                    <img id="butterfly-logo" class="img-fluid" src="../static/img/icons8-butterfly-white-50.png"
+                         alt="Butterfly logo">
+                </div>
+            </a>
+
+            <!-- Navbar toggler -->
+            <button class="navbar-toggler" type="button" data-toggle="collapse"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="navbar-toggler-icon"></span>
+                <span class="navbar-toggler-icon"></span>
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+
+        <div class="collapse navbar-collapse">
+            <!-- Navbar links -->
+            {% block navbar_links %}
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('contacts') }}">
+                            <i class="material-icons">group</i>
+                            Contacts
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('projects') }}">
+                            <i class="material-icons">folder</i>
+                            Projects
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('subscriptions') }}">
+                            <i class="material-icons">list</i>
+                            Subscriptions
+                        </a>
+                    </li>
+                </ul>
+            {% endblock navbar_links %}
+
+            <!-- Search box -->
+            {% block search_box %}
+                <!-- Empty, will be filled by other pages -->
+            {% endblock search_box %}
+        </div>
+    </div>
+</nav>
+
+<!---------- MAIN CONTENT ---------->
+<div class="main-box">
+    {% block main_content %}
+        <div class="text-center" style="margin-top: 3em">
+            <img id="butterfly-image" class="img-fluid" src="../static/img/swallowtail-butterfly.png" alt="Butterfly image">
+        </div>
+        <div class="text-center" style="margin-top: 2em">
+            <img id="onion-logo" class="img-fluid" src="../static/img/logo.png" alt="Onion Software logo">
+        </div>
+    {% endblock main_content %}
+</div>
+
+<!---------- FOOTER ---------->
+<footer class="footer">
+    <div class="container text-center">
+        <p>
+            Made with <i class="material-icons heart-icon">favorite</i> by
+            <a href="https://github.com/Onion-Software" target="_blank">Onion Software</a> for
+            <a href="https://www.imolainformatica.it/home/" target="_blank">Imola Informatica</a>
+        </p>
+    </div>
+</footer>
+
+<!---------- SCRIPTS ---------->
+<!-- Material Kit core JS -->
+<script type="text/javascript" src="../static/assets/js/core/jquery.min.js"></script>
+<script type="text/javascript" src="../static/assets/js/core/popper.min.js"></script>
+<script type="text/javascript" src="../static/assets/js/core/bootstrap-material-design.min.js"></script>
+<script type="text/javascript" src="../static/assets/js/plugins/moment.min.js"></script>
+<!-- Control center for Material Kit: parallax effects, scripts.. -->
+<script type="text/javascript" src="../static/assets/js/material-kit.js?v=2.0.5"></script>
+</body>
+</html>

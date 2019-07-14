@@ -1,0 +1,28 @@
+{
+    "kafka_topics": {
+        "topic_producer_name_list": {
+            "redmine": "redmine",
+            "gitlab": "gitlab"
+        },
+        "topic_consumer_name_list": {
+            "telegram": "telegram",
+            "email": "email",
+            "slack": "slack"
+        }
+    },
+    "kafka_producer": {
+        "bootstrap_servers": "kafka:9092"
+    },
+    "kafka_consumer": {
+        "bootstrap_servers": "kafka:9092",
+        "enable_auto_commit": true,
+        "auto_commit_interval_ms": 300,
+        "auto_offset_reset": "earliest",
+        "group_id": "my-group"
+    },
+    "mongo": {
+        "db_name": "test2-db",
+        "host": "mongodb",
+        "port": 27017
+    }
+}
